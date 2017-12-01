@@ -15,4 +15,4 @@ RUN pip install tensorflow
 # Copy server
 COPY ./ /app
 WORKDIR /app
-CMD FLASK_APP=server.py flask run
+CMD FLASK_APP=server.py flask run --host=0.0.0.0
