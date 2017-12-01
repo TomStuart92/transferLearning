@@ -38,6 +38,21 @@ bazel-bin/tensorflow/examples/image_retraining/label_image \
 --image=../testImages/test01.png
 ```
 
+### Training Flags
+
+When we train the model in step 7 there are a set of optional flags which may improve the performance of the algorithm but vastly increase the time it takes to train:
+
+--random_crop (number between 5 - 10)   
+--random_scale (number between 5 - 10)  
+--random_brightness (number between 5 - 10)  
+--flip_left_right
+
+Each of these apply a transformation to the pictures in the training set to artificially make one picture appear to be several. However you need to think about if these make sense.
+
+An OCR system with documents doesn't really make sense to have each of the pictures flipped left to right!
+
+Think about which you use as it can take up to 10hours to train a model with all these flags on.
+
 ## Server
 
 The server needs only two changes to be able to run image recognition on the model trained above.
