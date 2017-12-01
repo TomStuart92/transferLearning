@@ -1,0 +1,13 @@
+# -*- protobuffer -*-
+entry {
+  target_class: 0
+  target_class_string: "key_operated_multipoint_lock"
+}
+entry {
+  target_class: 1
+  target_class_string: "five_lever_mortice_deadlock"
+}
+entry {
+  target_class: 2
+  target_class_string: "rim_automatic_deadlatch_with_key_locking_handle"
+}
