@@ -39,11 +39,14 @@ def create_graph():
     _ = tf.import_graph_def(graph_def, name='')
 
 
+# we can set up the graph once which reduces the majority of overhead when classifying images.
+create_graph()
+
+
 def run_inference_on_image(_):
   # extract input image
   image = inputs[0]
   image_data = image.read()
-  create_graph()
 
   with tf.Session() as sess:
 
