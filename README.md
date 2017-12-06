@@ -6,12 +6,15 @@ The methodology broadly follows this tutorial: [link](tensorflow.org/tutorials/i
 
 An academic discussion of transfer learning can be found here: [link](https://arxiv.org/pdf/1310.1531v1.pdf).
 
-The repository is divided into two folders, tensorflow and server.
+The repository is divided into five folders.
 
 - **tensorflow**: contains the files needed to retrain the InceptionV3 model to categorise an arbitrary data set.
 - **server**: contains a basic python flask server which supports drop and drag serving of the model created by the tensorflow library.
+- **keras**: another retraining implementation written in Keras. This allows us to convert it to a coreML model for iOS.
+- **converter**: a simple converter to take a keras model and weights and return a coreML model.
+- **app**: a simple iOS app to use the coreML model outputted from the converter
 
-Both folders contain Dockerfiles to allow reproducible deployment on local and remote systems.
+All folders, except the app contain Dockerfiles to allow reproducible deployment on local and remote systems.
 
 ## Tensorflow
 
@@ -71,3 +74,49 @@ cd server
 docker build .    ===> gives containerId
 docker run -it -p 5000:5000 <containerId>
 ```
+
+We use kubectl and AWS ECS to deploy the server. To push a new version of the server to ECS:
+
+```
+`aws ecr get-login --no-include-email --region eu-west-1`
+docker build -t locks-ocr:v3 .
+docker tag locks-ocr:v3 355555488900.dkr.ecr.eu-west-1.amazonaws.com/locks-ocr:v3
+docker push 355555488900.dkr.ecr.eu-west-1.amazonaws.com/locks-ocr:v3
+```
+
+Then to deploy using kubectl
+
+1. Update the locksOCR-deployment.yaml file to point at the version you pushed above.
+2. Run `kubectl apply -f ./locksOCR-deployment.yaml`
+
+## Keras
+
+To train the model with Keras use `python train.py --train_dir <pathToTrainingDirectory> --val_dir <pathToValidationDirectory>`
+
+This will train the model and output a weights.pb file and a model.json.
+The model.json is actually a text file which will need to be transformed to pure json before it can be used.
+
+## Converter
+
+To Use:
+
+1. Copy the files outputted from the Keras model into the converter folder.
+2. Edit your batch_input_shape in the model.json to [null, 299, 299, 3] if you want xcode to properly associate an image as the input type.
+3. Build and run the docker container:
+
+```
+docker build .    ===> gives containerId
+docker run -it <containerId>
+# from inside container shell
+    python converter.py
+# from outside container once finished
+    docker cp <containerId>:/app/locks.mlmodel ./locks.mlmodel
+```
+
+## App
+
+To Build:
+
+1. Open in XCode
+2. Drag the locks.mlmodel file into the build file.
+3. Edit the viewcontroller.swift file as needed to integrate model.

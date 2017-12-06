@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: lockocr
-        image: 355555488900.dkr.ecr.eu-west-1.amazonaws.com/locks-ocr:v2
+        image: 355555488900.dkr.ecr.eu-west-1.amazonaws.com/locks-ocr:v3
         ports:
         - name: lockocr-port
           containerPort: 5000
