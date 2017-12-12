@@ -86,7 +86,7 @@ docker push 355555488900.dkr.ecr.eu-west-1.amazonaws.com/locks-ocr:v3
 
 Then to deploy using kubectl
 
-1. Update the locksOCR-deployment.yaml file to point at the version you pushed above.
+1. Define a kubectl yaml deployment file pointing at your most recent version.
 2. Run `kubectl apply -f ./locksOCR-deployment.yaml`
 
 ## Keras
